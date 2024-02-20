@@ -1,4 +1,10 @@
-export default  class HomeArticleResponse {
+
+class Tag {
+  name: string;
+  url: string;
+}
+
+export class DataItem {
   adminAdd: boolean;
   apkLink: string;
   audit: number;
@@ -36,9 +42,10 @@ export default  class HomeArticleResponse {
   zan: number;
 }
 
-class Tag {
-  name: string;
-  url: string;
+export default class HomeArticleResponse {
+  curPage: number;
+  datas: DataItem[];
 }
+
 
 

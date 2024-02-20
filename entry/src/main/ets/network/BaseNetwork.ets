@@ -20,6 +20,7 @@ export class RequestParam {
 export default async function postData<T>(request: RequestParam): Promise<BaseResponse<T>> {
   let dataList:BaseResponse<T> = new BaseResponse()
   let httpRequest = http.createHttp()
+  console.log("param: "+ JSON.stringify(request))
   let response = httpRequest.request(
     request.url,
     {
@@ -49,3 +50,4 @@ export default async function postData<T>(request: RequestParam): Promise<BaseRe
   })
   return dataList
 }
+
