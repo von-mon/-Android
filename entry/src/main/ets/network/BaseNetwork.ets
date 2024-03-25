@@ -51,3 +51,13 @@ export default async function postData<T>(request: RequestParam): Promise<BaseRe
   return dataList
 }
 
+export class net {
+  static test(data:IDataListener) {
+
+  }
+}
+
+export interface IDataListener {
+  onSuccess:()=>void
+  onError:()=>void
+}

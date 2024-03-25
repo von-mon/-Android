@@ -1,93 +1,67 @@
-import postData, { RequestParam } from '../network/BaseNetwork'
-import HomeArticleResponse, { DataItem } from '../data/HomeArticleResponse'
-import {ListView, RefreshController} from '@app/refresh'
-import {LoadingDialog} from '../dialog/LoadingDialog'
+
+import { net,IDataListener } from '../network/BaseNetwork'
+import {HomePage }from './HomePage'
+import {Tree }from './Tree'
+import {Market }from './Market'
+import {Project }from './Project'
+
+const tabList = [
+  {
+    title:"首页",
+    img:$r('app.media.home'),
+    checkImg:$r('app.media.ic_home_checked'),
+  },
+  {
+    title:"体系",
+    img:$r('app.media.tree'),
+    checkImg:$r('app.media.ic_tree_checked'),
+  },
+  {
+    title:"项目",
+    img:$r('app.media.project'),
+    checkImg:$r('app.media.ic_project_checked'),
+  },
+  {
+    title:"广场",
+    img:$r('app.media.market'),
+    checkImg:$r('app.media.ic_market_checked'),
+  }
+]
+
 @Entry
 @Component
 struct Index {
-  @State message: string = 'Hello World'
-  @State dataList: DataItem[] = []
-  @State count:number = 0
-  @State controller: RefreshController = new RefreshController() //刷新控制器
-  private loading = new CustomDialogController({
-    builder: LoadingDialog(),
-    alignment: DialogAlignment.Center,
-    offset: ({ dx: 0, dy: 0 }),
-    autoCancel: false,
-    customStyle: true
-  })
-  async aboutToAppear() {
-    this.getData(this.count)
-  }
-
-  async getData(count:number) {
-    this.loading.open()
-    const list = await postData<HomeArticleResponse>(new RequestParam(`article/list/${count}/json`, "", true))
-    console.log(JSON.stringify(list))
-    if (this.dataList.length == 0) {
-      this.dataList = list.data.datas
-    } else {
-     this.dataList = this.dataList.concat(list.data.datas)
-    }
-    this.loading.close()
-    console.log(this.dataList.length+"")
-  };
-
+  private controller: TabsController = new TabsController()
+  @State currentIndex:number = 0
   build() {
+    Tabs({barPosition:BarPosition.End,controller:this.controller}) {
+      TabContent() {
+          HomePage()
+      }.tabBar(this.TabBuilder(0))
+      TabContent() {
+        Tree()
+      }.tabBar(this.TabBuilder(1))
+      TabContent() {
+        Project()
+      }.tabBar(this.TabBuilder(2))
+      TabContent() {
+        Market()
+      }.tabBar(this.TabBuilder(3))
+    }
+  }
+
+  @Builder
+  TabBuilder(index:number) {
     Column() {
-      ListView({
-        items: this.dataList,
-        itemLayout: (item, index) => this.articleItemLayout(item, index),
-        controller: this.controller,
-        onRefresh: () => {
-          this.count = 0
-          this.dataList.length = 0
-          this.getData(this.count)
-          this.controller.finishRefresh()
-        },
-        onLoadMore: () => {
-          this.count++
-          console.log(this.count + "")
-          this.getData(this.count)
-          this.controller.finishLoadMore()
-        }
-      })
-
+      Image(this.currentIndex === index ? tabList[index].checkImg:tabList[index].img)
+        .size({ width: 24, height: 24 })
+      Text(tabList[index].title)
+        .fontColor(this.currentIndex === index ? $r('app.color.themeColor') : $r('app.color.black'))
     }
-    .backgroundColor($r('app.color.HomeBg'))
+    .onClick(() => {
+      this.currentIndex = index
+      this.controller.changeIndex(index)
+    })
   }
 
-  @Builder
-  articleItemLayout(item, index) {
-    Row(){
-      Column() {
-        Text(item.title)
-          .fontSize(18)
-          .fontStyle(FontStyle.Normal)
-          .fontWeight(600)
-          .padding(16)
-          .alignSelf(ItemAlign.Start)
-
-        Row(){
-          Text(`作者: ${item.author}`)
-            .margin({right:8})
-          Text(`时间: ${item.niceDate}`)
-        }
-        .alignSelf(ItemAlign.Start)
-        .margin({left:16})
-      }
-      .layoutWeight(1)
-      .backgroundColor(Color.White)
-      .height('20%')
-      .margin({left:16,right:16})
-      .borderRadius(16)
-    }
-    .width('100%')
-    .margin({top:16})
-  }
-
-  @Builder
-  waitDialog(show:boolean) {
-
-  }
 }

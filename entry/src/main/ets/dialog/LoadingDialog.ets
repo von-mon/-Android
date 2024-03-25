@@ -11,8 +11,8 @@ export struct LoadingDialog {
   }
   build() {
     Progress({ value: this.index, total: 100, type: ProgressType.Ring })
-      .color(Color.Blue).value(this.index).width(100)
-      .style({ strokeWidth: 20, scaleCount: 30, scaleWidth: 50 })
+      .color(Color.Blue).value(this.index).width(60)
+      .style({ strokeWidth: 8, scaleCount: 30, scaleWidth: 30 })
       .backgroundColor(Color.White)
   }
 }

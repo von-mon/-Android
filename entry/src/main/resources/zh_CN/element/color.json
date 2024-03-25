@@ -7,6 +7,14 @@
     {
       "name": "HomeBg",
       "value": "#ededed"
+    },
+    {
+      "name": "themeColor",
+      "value": "#1296db"
+    },
+    {
+      "name": "black",
+      "value": "#000000"
     }
   ]
 }
